@@ -62,7 +62,8 @@
     
     <nav>
         <a href="#home">Home</a>
-        <a href="#about">About</a>
+        <a href="#papers">Papers</a>
+        <a href="#github">GitHub</a>
         <a href="#features">Features</a>
         <a href="#contact">Contact</a>
     </nav>
@@ -70,7 +71,102 @@
     <main>
         <section id="home">
             <h2>Welcome</h2>
-            <p>Your content here</p>
+            <p>This project aims to replicate the arcitecture and experiments done in the HippoRAG 2 paper. To achieve this, we will briefly cover the papers and move towards repositories and how we can complete this project on time.</p>
+        </section>
+    </main>
+
+    <main>
+        <section id="papers">
+            <h1>Paper 1</h1>
+
+<h2>Biological Inspiration: Implement Hippocampal Memory into an LLM</h2>
+
+<h2>Introduction</h2>
+<p>
+HippoRAG orchestrates LLMs, knowledge graphs, and the Personalized PageRank (PPR) algorithm 
+to mimic the different roles of the neocortex and hippocampus in human memory.
+</p>
+<p>
+It compares HippoRAG with existing RAG models on multi-hop question answering tasks.
+</p>
+
+<h3>Results</h3>
+<ul>
+    <li>HippoRAG is approximately 20% better.</li>
+    <li>Achieves comparable or better results with single-step retrieval.</li>
+    <li>More cost-efficient compared to traditional approaches.</li>
+</ul>
+
+<h2>Background</h2>
+
+<h3>Retrieval Augmented Generation (RAG)</h3>
+<p>
+RAG allows new information to be presented to a model without retraining.
+However, traditional RAG has limitations: each item is treated independently, 
+making complex reasoning difficult without explicit connections.
+</p>
+
+<h3>Open Information Extraction</h3>
+<p>
+A method used to extract structured information (such as triples) from unstructured text.
+</p>
+
+<h2>HippoRAG Concept</h2>
+<p>
+HippoRAG introduces associative memory to connect ideas, making it easier to retrieve related information.
+</p>
+<p>
+When data is interconnected, it becomes possible to traverse relationships efficiently instead of 
+manually comparing isolated data points, as required in traditional RAG.
+</p>
+<p>
+The design uses an LLM as a corpus to construct Knowledge Graphs (KG), which act as hippocampal memory.
+A Personalized PageRank (PPR) algorithm is then applied to traverse the KG using query concepts as seeds.
+</p>
+<p>
+These query concepts act like seeds: they are planted based on key data and expand through the graph, 
+with PPR guiding their growth and traversal.
+</p>
+
+<h2>Hippocampal Memory Indexing Theory (Biological Motivation)</h2>
+<p>
+This theory proposes that long-term human memory consists of components that achieve two objectives:
+</p>
+
+<ul>
+    <li><strong>Pattern Separation:</strong> Ensures distinct experiences are uniquely represented.</li>
+    <li><strong>Pattern Completion:</strong> Enables full memory retrieval from partial inputs.</li>
+</ul>
+
+<p>
+Pattern separation occurs during memory encoding. The neocortex processes stimuli into high-level features,
+which are then routed through parahippocampal regions to the hippocampus for indexing.
+</p>
+
+<p>
+Indexed memories include salient information that helps determine relationships between data points.
+New information can be integrated dynamically by updating hippocampal indexing.
+</p>
+
+<h2>Implementation</h2>
+
+<h3>Offline Indexing (Memory Encoding)</h3>
+<ul>
+    <li>Uses a tuned LLM to extract knowledge graph triples.</li>
+    <li>Knowledge graph is schemaless using open information extraction.</li>
+    <li>Dense retrieval encoders improve connectivity between nodes.</li>
+</ul>
+
+<h3>Online Retrieval</h3>
+<ul>
+    <li>The LLM extracts key query entities (salient concepts).</li>
+    <li>Entities are matched to nodes in the knowledge graph.</li>
+    <li>Matched nodes become starting points (query nodes).</li>
+    <li>PPR algorithm traverses the graph from these nodes.</li>
+    <li>Relevant information is ranked and retrieved.</li>
+</ul>
+
+            <h1>Paper 2</h1>
         </section>
     </main>
     
