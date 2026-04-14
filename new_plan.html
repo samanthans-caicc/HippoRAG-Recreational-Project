@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HippoRAG Recreational Project</title>
+
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: 'Times New Roman', Times, serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+header {
+    background:#4CAF50;
+    color:white;
+    padding:1rem;
+    text-align:center;
+}
+
+nav {
+    background:#333;
+    padding:0.5rem;
+    text-align:center;
+}
+
+nav a {
+    color:white;
+    text-decoration:none;
+    padding:0.5rem 1rem;
+}
+
+nav a:hover { background:#555; }
+
+main {
+    max-width:1000px;
+    margin:1rem auto;
+    padding:1rem;
+}
+
+section {
+    margin-bottom:2rem;
+}
+
+h1, h2, h3 {
+    margin-bottom:0.5rem;
+}
+
+ul {
+    margin-left:20px;
+}
+
+footer {
+    background:#333;
+    color:white;
+    text-align:center;
+    padding:0.5rem;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>HippoRAG Recreational Project</h1>
+</header>
+
+<nav>
+    <a href="#paper1">Paper 1</a>
+    <a href="#paper2">Paper 2</a>
+    <a href="#github">GitHub</a>
+    <a href="#reproduce">Reproduction</a>
+    <a href="https://github.com/OSU-NLP-Group/HippoRAG">GitHub Repo</a>
+</nav>
+
+<main>
+
+<section id="paper1">
+
+<h1>Paper 1: HippoRAG (2024)</h1>
+
+<h2>Core Idea</h2>
+<p>
+HippoRAG is a biologically inspired system that combines Large Language Models (LLMs), 
+Knowledge Graphs (KGs), and the Personalized PageRank (PPR) algorithm to mimic how 
+the neocortex and hippocampus interact in human memory.
+</p>
+
+<h2>Key Contributions</h2>
+<ul>
+<li>Hybrid memory system (LLM + Knowledge Graph)</li>
+<li>Two-stage pipeline: Offline (KG construction) + Online (retrieval)</li>
+<li>Single-step multi-hop reasoning using graph traversal (PPR)</li>
+</ul>
+
+<h2>Results</h2>
+<ul>
+<li>~20% improvement over traditional RAG methods</li>
+<li>Comparable or better performance using single-step retrieval</li>
+<li>More computationally efficient than iterative retrieval approaches</li>
+</ul>
+
+<h2>Pipeline</h2>
+<p>Documents → Knowledge Graph → Query → PPR Traversal → Answer</p>
+
+<hr>
+
+<h2>Detailed Notes & Explanation</h2>
+
+<h3>Introduction</h3>
+<p>
+HippoRAG orchestrates LLMs, knowledge graphs, and the Personalized PageRank (PPR) algorithm 
+to simulate the roles of the neocortex (processing) and hippocampus (memory indexing).
+</p>
+<p>
+It is evaluated against existing Retrieval-Augmented Generation (RAG) systems, 
+particularly on multi-hop question answering tasks.
+</p>
+
+<h3>Background</h3>
+
+<h4>Retrieval Augmented Generation (RAG)</h4>
+<p>
+RAG allows new information to be introduced into a model without retraining by retrieving 
+relevant documents at query time. However, traditional RAG treats each piece of information 
+independently, making it difficult to perform complex reasoning that requires connections 
+between multiple data points.
+</p>
+
+<h4>Open Information Extraction</h4>
+<p>
+Open Information Extraction (OpenIE) is a technique used to extract structured relationships 
+from unstructured text. It typically outputs triples in the form:
+</p>
+<pre>(subject, relation, object)</pre>
+<p>
+These triples can then be used to construct a knowledge graph representing relationships 
+between entities.
+</p>
+
+<h3>HippoRAG Concept</h3>
+<p>
+HippoRAG introduces associative memory by connecting pieces of information within a knowledge graph.
+This allows related concepts to be discovered through graph traversal rather than manual comparison.
+</p>
+<p>
+Instead of searching isolated documents, the system navigates relationships between entities. 
+The LLM is used to generate the knowledge graph, which serves as a memory structure.
+</p>
+<p>
+Query concepts act like “seeds” that are placed into the graph. The Personalized PageRank (PPR) 
+algorithm then spreads influence through connected nodes, similar to how ideas expand through 
+associative memory in humans.
+</p>
+
+<h3>Hippocampal Memory Indexing Theory (Biological Motivation)</h3>
+<p>
+This theory suggests that long-term human memory relies on two key mechanisms:
+</p>
+
+<ul>
+<li><strong>Pattern Separation:</strong> Ensures different experiences are stored as distinct representations.</li>
+<li><strong>Pattern Completion:</strong> Allows full memories to be retrieved from partial inputs.</li>
+</ul>
+
+<p>
+During encoding, the neocortex processes sensory input into high-level features, which are then 
+passed to the hippocampus for indexing. The hippocampus stores relationships and salient features 
+that help determine how memories are connected.
+</p>
+
+<p>
+New information can be integrated dynamically by updating these memory indices, allowing for 
+flexible and evolving knowledge representation.
+</p>
+
+<h3>Implementation</h3>
+
+<h4>Offline Indexing (Memory Encoding)</h4>
+<ul>
+<li>Use a tuned LLM to extract knowledge graph triples via OpenIE</li>
+<li>Build a schemaless knowledge graph</li>
+<li>Use dense retrieval encoders to improve connectivity between nodes</li>
+</ul>
+
+<h4>Online Retrieval</h4>
+<ul>
+<li>LLM extracts key query entities (salient concepts)</li>
+<li>Entities are matched to nodes in the knowledge graph</li>
+<li>Matched nodes become “query nodes” (starting points)</li>
+<li>PPR algorithm traverses the graph from these nodes</li>
+<li>Relevant nodes and passages are ranked and retrieved</li>
+</ul>
+
+<p>
+This process allows the system to move from partial information to complete answers, 
+mirroring how human memory reconstructs knowledge from incomplete cues.
+</p>
+
+</section>
+
+<section id="paper2">
+
+<h1>Paper 2: HippoRAG 2 (2025)</h1>
+
+<h2>Core Idea</h2>
+<p>
+HippoRAG 2 extends the original HippoRAG framework into a more complete memory system, 
+aiming to support factual recall, associative reasoning, and sense-making simultaneously.
+</p>
+
+<h2>Key Improvements</h2>
+<ul>
+<li>Integration of passage-level information into the knowledge graph</li>
+<li>Improved query understanding through query-to-triple matching</li>
+<li>LLM-assisted filtering to improve retrieval accuracy</li>
+</ul>
+
+<h2>Results</h2>
+<ul>
+<li>Improved performance across factual, associative, and reasoning tasks</li>
+<li>~7% improvement in associative memory benchmarks</li>
+<li>Better balance between retrieval accuracy and reasoning capability</li>
+</ul>
+
+<hr>
+
+<h2>Detailed Notes & Explanation</h2>
+
+<h3>Introduction</h3>
+<p>
+HippoRAG 2 builds upon the first version by addressing a key limitation in existing 
+structure-augmented RAG systems such as HippoRAG v1, GraphRAG, RAPTOR, and LightRAG.
+</p>
+<p>
+While these systems improve reasoning and associativity, they often perform worse than 
+standard dense retrieval on simple factual question answering tasks. This reveals a critical gap:
+a true memory system must perform well across all types of memory.
+</p>
+<p>
+The goal of HippoRAG 2 is to unify three types of memory:
+</p>
+<ul>
+<li><strong>Factual Memory</strong> (direct retrieval)</li>
+<li><strong>Associative Memory</strong> (connections between ideas)</li>
+<li><strong>Sense-Making</strong> (multi-hop reasoning)</li>
+</ul>
+
+<p>
+To achieve this, the system retains the PPR-over-KG backbone but enhances it by 
+integrating richer contextual information and using the LLM more actively during retrieval.
+</p>
+
+<h3>Key Improvements Over v1</h3>
+
+<h4>1. Dense–Sparse Integration (Passage Nodes)</h4>
+<p>
+HippoRAG 2 introduces passage nodes into the knowledge graph. These nodes are connected 
+to extracted phrases using "contains" relationships.
+</p>
+<p>
+This allows the graph to represent both:
+</p>
+<ul>
+<li>Concept-level knowledge (sparse, entity-based)</li>
+<li>Contextual information (dense, passage-based)</li>
+</ul>
+<p>
+This significantly improves factual recall while maintaining reasoning capabilities.
+</p>
+
+<h4>2. Deeper Contextualization (Query-to-Triple Linking)</h4>
+<p>
+Instead of mapping individual entities (NER → node), the system embeds the entire query 
+and matches it directly against triples in the knowledge graph.
+</p>
+<p>
+Triples preserve relational context, which individual entities often lose. This leads to 
+better alignment between the query and stored knowledge.
+</p>
+<p>
+Empirical results show that this approach improves retrieval performance significantly 
+(over 10% improvement in ranking metrics such as R@5).
+</p>
+
+<h4>3. Recognition Memory (LLM-Based Filtering)</h4>
+<p>
+After retrieving candidate triples, the LLM is used to filter out irrelevant ones before 
+they are used to seed the PPR algorithm.
+</p>
+<p>
+This mimics the human memory process of:
+</p>
+<ul>
+<li><strong>Recall:</strong> retrieving possible candidates</li>
+<li><strong>Recognition:</strong> selecting the correct ones</li>
+</ul>
+<p>
+This step improves precision and reduces noise in graph traversal.
+</p>
+
+<h3>Updated Retrieval Pipeline</h3>
+
+<ul>
+<li>Query is embedded and matched to graph triples</li>
+<li>Top candidate triples are retrieved</li>
+<li>LLM filters relevant triples (recognition step)</li>
+<li>Filtered nodes are used as seeds for PPR traversal</li>
+<li>Graph traversal ranks relevant nodes and passages</li>
+<li>Final context is passed to the LLM for answer generation</li>
+</ul>
+
+<h3>Key Insight</h3>
+<p>
+HippoRAG 2 shifts the system from a retrieval-based architecture to a true memory system. 
+Instead of simply fetching relevant documents, it dynamically reconstructs knowledge by 
+combining structured relationships, contextual passages, and LLM reasoning.
+</p>
+
+</section>
+
+<section id="github">
+<h1>GitHub Overview</h1>
+
+<h2>What It Contains</h2>
+<ul>
+<li>KG construction pipeline</li>
+<li>PPR retrieval system</li>
+<li>Evaluation scripts</li>
+</ul>
+
+<h2>Usage</h2>
+<pre>
+git clone https://github.com/OSU-NLP-Group/HippoRAG.git
+pip install -r requirements.txt
+python build_kg.py
+python run_retrieval.py
+</pre>
+
+</section>
+
+<section id="reproduce">
+<h1>Reproducing Paper 2</h1>
+
+<h2>Steps</h2>
+<ul>
+<li>Collect dataset</li>
+<li>Extract triples</li>
+<li>Build knowledge graph</li>
+<li>Extract query entities</li>
+<li>Run PPR traversal</li>
+<li>Generate answer with LLM</li>
+</ul>
+
+<h2>Pipeline</h2>
+<p>Corpus → KG → Query → PPR → Context → LLM</p>
+
+</section>
+
+</main>
+
+<footer>
+<p>HippoRAG Project - 2026</p>
+</footer>
+
+</body>
+</html>
