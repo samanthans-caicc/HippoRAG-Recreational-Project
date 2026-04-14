@@ -108,6 +108,35 @@ the neocortex and hippocampus interact in human memory.
 
 <hr>
 
+<h3>System Pipeline</h3>
+<svg width="100%" height="220">
+
+  <rect x="20" y="80" width="140" height="50" fill="#4CAF50"/>
+  <text x="35" y="110" fill="white">Documents</text>
+
+  <rect x="200" y="80" width="180" height="50" fill="#2196F3"/>
+  <text x="210" y="110" fill="white">Knowledge Graph (KG)</text>
+
+  <rect x="420" y="80" width="180" height="50" fill="#FF9800"/>
+  <text x="435" y="110" fill="white">PPR Traversal</text>
+
+  <rect x="640" y="80" width="140" height="50" fill="#9C27B0"/>
+  <text x="655" y="110" fill="white">LLM Answer</text>
+
+  <line x1="160" y1="105" x2="200" y2="105" stroke="black"/>
+  <line x1="380" y1="105" x2="420" y2="105" stroke="black"/>
+  <line x1="600" y1="105" x2="640" y2="105" stroke="black"/>
+
+</svg>
+
+<p>
+This diagram shows the overall HippoRAG pipeline. Raw documents are first processed 
+by an LLM to construct a Knowledge Graph (KG), which stores relationships between entities. 
+When a query is made, the system performs a Personalized PageRank (PPR) traversal over the graph 
+to identify the most relevant connected information. The retrieved context is then passed to the LLM 
+to generate a final answer. This replaces traditional document retrieval with structured memory traversal.
+</p>
+
 <h2>Detailed Notes & Explanation</h2>
 
 <h3>Introduction</h3>
@@ -154,6 +183,34 @@ The LLM is used to generate the knowledge graph, which serves as a memory struct
 Query concepts act like “seeds” that are placed into the graph. The Personalized PageRank (PPR) 
 algorithm then spreads influence through connected nodes, similar to how ideas expand through 
 associative memory in humans.
+</p>
+
+<h3>Knowledge Graph Traversal (PPR)</h3>
+<svg width="100%" height="260">
+
+  <circle cx="200" cy="130" r="30" fill="#4CAF50"/>
+  <text x="180" y="135" fill="white">Query</text>
+
+  <circle cx="350" cy="60" r="25" fill="#2196F3"/>
+  <text x="335" y="60" fill="white">A</text>
+
+  <circle cx="350" cy="200" r="25" fill="#2196F3"/>
+  <text x="335" y="200" fill="white">B</text>
+
+  <circle cx="520" cy="130" r="30" fill="#FF9800"/>
+  <text x="495" y="135" fill="white">Answer</text>
+
+  <line x1="230" y1="130" x2="325" y2="70" stroke="black"/>
+  <line x1="230" y1="130" x2="325" y2="190" stroke="black"/>
+  <line x1="375" y1="130" x2="490" y2="130" stroke="black"/>
+
+</svg>
+<p>
+This diagram illustrates how Personalized PageRank (PPR) operates over a knowledge graph. 
+The query is first mapped to one or more nodes in the graph. From these starting points, 
+probability spreads across connected nodes. Nodes that are more strongly connected to the query 
+receive higher scores. The most relevant node (highlighted as the answer) is selected based on 
+this ranking. This process allows the system to perform multi-hop reasoning in a single step.
 </p>
 
 <h3>Hippocampal Memory Indexing Theory (Biological Motivation)</h3>
@@ -302,6 +359,34 @@ This mimics the human memory process of:
 This step improves precision and reduces noise in graph traversal.
 </p>
 
+<h3>HippoRAG 2 Retrieval Pipeline</h3>
+<svg width="100%" height="230">
+
+  <rect x="20" y="90" width="120" height="50" fill="#4CAF50"/>
+  <text x="35" y="120" fill="white">Query</text>
+
+  <rect x="180" y="90" width="170" height="50" fill="#2196F3"/>
+  <text x="190" y="120" fill="white">Triple Matching</text>
+
+  <rect x="380" y="90" width="170" height="50" fill="#FF9800"/>
+  <text x="395" y="120" fill="white">LLM Filtering</text>
+
+  <rect x="580" y="90" width="150" height="50" fill="#9C27B0"/>
+  <text x="600" y="120" fill="white">PPR Traversal</text>
+
+  <line x1="140" y1="115" x2="180" y2="115" stroke="black"/>
+  <line x1="350" y1="115" x2="380" y2="115" stroke="black"/>
+  <line x1="550" y1="115" x2="580" y2="115" stroke="black"/>
+
+</svg>
+<p>
+This diagram highlights the improvements introduced in HippoRAG 2. Instead of directly mapping 
+queries to entities, the system matches the entire query against triples in the knowledge graph, 
+preserving relational context. The LLM then filters these candidate triples to remove irrelevant ones, 
+mimicking human recognition memory. The refined set of nodes is used as input to the PPR algorithm, 
+resulting in more accurate and context-aware retrieval.
+</p>
+
 <h3>Updated Retrieval Pipeline</h3>
 
 <ul>
@@ -323,40 +408,263 @@ combining structured relationships, contextual passages, and LLM reasoning.
 </section>
 
 <section id="github">
-<h1>GitHub Overview</h1>
 
-<h2>What It Contains</h2>
+<h1>Section 3: GitHub Repository (Implementation)</h1>
+
+<h2>Core Idea</h2>
+<p>
+The HippoRAG GitHub repository provides a full implementation of the system described 
+in the papers, including knowledge graph construction, graph-based retrieval using 
+Personalized PageRank (PPR), and evaluation pipelines.
+</p>
+
+<h2>What the Repository Contains</h2>
 <ul>
-<li>KG construction pipeline</li>
-<li>PPR retrieval system</li>
-<li>Evaluation scripts</li>
+<li>Knowledge Graph construction pipeline using LLM-based triple extraction</li>
+<li>Graph traversal engine implementing Personalized PageRank (PPR)</li>
+<li>Query processing and entity/triple matching components</li>
+<li>Evaluation scripts for benchmarking multi-hop QA tasks</li>
 </ul>
 
-<h2>Usage</h2>
+<hr>
+
+<h2>Detailed Explanation</h2>
+
+<h3>1. Knowledge Graph Construction</h3>
+<p>
+The repository builds a schemaless knowledge graph using Open Information Extraction (OpenIE).
+An LLM is used to extract triples of the form:
+</p>
+<pre>(subject, relation, object)</pre>
+
+<p>
+These triples form nodes and edges in the graph, representing relationships between concepts. 
+Dense retrieval encoders are used to improve connectivity by linking semantically similar nodes.
+</p>
+
+<h3>2. Retrieval Engine (PPR)</h3>
+<p>
+The core retrieval mechanism is Personalized PageRank (PPR), which enables efficient 
+multi-hop reasoning over the graph.
+</p>
+
+<ul>
+<li>Query is mapped to graph nodes (or triples)</li>
+<li>These nodes act as seeds</li>
+<li>PPR spreads probability across connected nodes</li>
+<li>Highly relevant nodes receive higher scores</li>
+</ul>
+
+<p>
+This replaces traditional iterative retrieval with a single graph traversal step.
+</p>
+
+<h3>3. Query Processing</h3>
+<p>
+The system extracts important concepts from the query and links them to the graph.
+In newer versions (HippoRAG 2), this is done using query-to-triple matching rather than 
+simple entity linking, preserving relational context.
+</p>
+
+<h3>4. LLM Integration</h3>
+<p>
+The LLM is used in multiple stages:
+</p>
+<ul>
+<li>Triple extraction (offline memory encoding)</li>
+<li>Query understanding (entity or triple extraction)</li>
+<li>Filtering relevant information (recognition step in v2)</li>
+<li>Final answer generation</li>
+</ul>
+
+<h3>5. End-to-End Pipeline</h3>
+
+<pre>
+Documents → LLM → Knowledge Graph
+                    ↓
+Query → Matching → Graph Nodes
+                    ↓
+              PPR Traversal
+                    ↓
+          Ranked Context Retrieval
+                    ↓
+               LLM Answer
+</pre>
+
+<hr>
+
+<h2>How to Use the Repository</h2>
+
+<h3>Step 1: Clone</h3>
 <pre>
 git clone https://github.com/OSU-NLP-Group/HippoRAG.git
+cd HippoRAG
+</pre>
+
+<h3>Step 2: Install Dependencies</h3>
+<pre>
 pip install -r requirements.txt
+</pre>
+
+<h3>Step 3: Build Knowledge Graph</h3>
+<pre>
 python build_kg.py
+</pre>
+
+<h3>Step 4: Run Retrieval</h3>
+<pre>
 python run_retrieval.py
 </pre>
+
+<h3>Step 5: Evaluate</h3>
+<pre>
+python evaluate.py
+</pre>
+
+<hr>
+
+<h2>Key Insights</h2>
+<ul>
+<li>The repository shows that memory can be externalized into a graph structure</li>
+<li>PPR enables efficient multi-hop reasoning without iterative retrieval</li>
+<li>System performance depends heavily on graph quality and connectivity</li>
+</ul>
+
+<h2>Challenges</h2>
+<ul>
+<li>Knowledge graph construction is computationally expensive</li>
+<li>Performance depends on quality of extracted triples</li>
+<li>Entity/triple matching must be accurate</li>
+</ul>
 
 </section>
 
 <section id="reproduce">
-<h1>Reproducing Paper 2</h1>
 
-<h2>Steps</h2>
+<h1>Section 4: Reproducing HippoRAG 2</h1>
+
+<h2>Core Objective</h2>
+<p>
+The goal of reproducing HippoRAG 2 is to build a non-parametric memory system 
+that enables an LLM to perform factual retrieval, associative reasoning, and 
+multi-hop inference without retraining.
+</p>
+
+<hr>
+
+<h2>Detailed Methodology</h2>
+
+<h3>1. Data Collection</h3>
+<p>
+Begin by collecting a corpus of documents. The quality and diversity of this data 
+are critical, as they directly impact the quality of the knowledge graph.
+</p>
+
+<h3>2. Knowledge Graph Construction</h3>
+
+<h4>Triple Extraction</h4>
+<p>
+Use an LLM with Open Information Extraction (OpenIE) to extract triples:
+</p>
+<pre>(subject, relation, object)</pre>
+
+<h4>Graph Creation</h4>
+<p>
+Construct a schemaless knowledge graph where:
+</p>
 <ul>
-<li>Collect dataset</li>
-<li>Extract triples</li>
-<li>Build knowledge graph</li>
-<li>Extract query entities</li>
-<li>Run PPR traversal</li>
-<li>Generate answer with LLM</li>
+<li>Nodes represent entities or concepts</li>
+<li>Edges represent relationships</li>
 </ul>
 
-<h2>Pipeline</h2>
-<p>Corpus → KG → Query → PPR → Context → LLM</p>
+<h4>Connectivity Enhancement</h4>
+<p>
+Use dense retrieval embeddings to connect semantically similar nodes, 
+improving graph traversal performance.
+</p>
+
+<h3>3. Query Processing</h3>
+
+<h4>Query Representation</h4>
+<p>
+Instead of extracting only named entities, encode the full query 
+to preserve context.
+</p>
+
+<h4>Query-to-Triple Matching</h4>
+<p>
+Match the query against triples in the knowledge graph to identify 
+relevant starting points.
+</p>
+
+<h3>4. Recognition Step (LLM Filtering)</h3>
+<p>
+Use the LLM to filter candidate triples before traversal. This step 
+removes irrelevant nodes and improves precision, mimicking human 
+recognition memory.
+</p>
+
+<h3>5. Graph Traversal (PPR)</h3>
+<p>
+Apply Personalized PageRank using the filtered nodes as seeds.
+</p>
+<ul>
+<li>Probability spreads through the graph</li>
+<li>Relevant nodes accumulate higher scores</li>
+<li>Multi-hop reasoning emerges naturally</li>
+</ul>
+
+<h3>6. Context Retrieval</h3>
+<p>
+Select top-ranked nodes and retrieve their associated passages 
+to form the context for answer generation.
+</p>
+
+<h3>7. Answer Generation</h3>
+<p>
+Feed the retrieved context into the LLM to generate the final response.
+</p>
+
+<hr>
+
+<h2>Full Pipeline Overview</h2>
+
+<pre>
+Corpus → Triple Extraction → Knowledge Graph
+                    ↓
+Query → Triple Matching → Candidate Nodes
+                    ↓
+          LLM Filtering (Recognition)
+                    ↓
+            PPR Graph Traversal
+                    ↓
+           Ranked Context Selection
+                    ↓
+               LLM Answer
+</pre>
+
+<hr>
+
+<h2>Key Insights</h2>
+<ul>
+<li>Performance depends heavily on knowledge graph quality</li>
+<li>PPR enables efficient multi-hop reasoning without iterative retrieval</li>
+<li>LLM plays a dual role: memory encoding and retrieval refinement</li>
+</ul>
+
+<h2>Challenges</h2>
+<ul>
+<li>High computational cost during graph construction</li>
+<li>Requires accurate triple extraction</li>
+<li>Query-to-triple matching must be precise</li>
+</ul>
+
+<h2>Final Insight</h2>
+<p>
+Reproducing HippoRAG 2 is less about scaling the model and more about 
+building a high-quality, well-connected memory structure that the model 
+can efficiently traverse.
+</p>
 
 </section>
 
